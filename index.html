@@ -1,0 +1,1657 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>미분과 원 - 삼각함수의 극한과 원의 탐구</title>
+  
+  <!-- KaTeX CSS & JS -->
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.8/dist/katex.min.css">
+  <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.8/dist/katex.min.js"></script>
+  <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.8/dist/contrib/auto-render.min.js"></script>
+
+  <style>
+    :root {
+      --primary: #1e40af;
+      --primary-light: #3b82f6;
+      --primary-bg: #eff6ff;
+      --accent: #0284c7;
+      --success: #15803d;
+      --success-bg: #f0fdf4;
+      --warning: #b45309;
+      --warning-bg: #fffbeb;
+      --danger: #b91c1c;
+      --danger-bg: #fef2f2;
+      --text: #0f172a;
+      --text-muted: #64748b;
+      --border: #e2e8f0;
+      --card-bg: #ffffff;
+      --body-bg: #ffffff;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      background-color: var(--body-bg);
+      color: var(--text);
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+      line-height: 1.5;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+    }
+
+    /* 상단 헤더 */
+    header {
+      background: #ffffff;
+      border-bottom: 1px solid var(--border);
+      padding: 12px 24px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 12px;
+      position: sticky;
+      top: 0;
+      z-index: 50;
+    }
+
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .brand-icon {
+      width: 32px;
+      height: 32px;
+      background: var(--primary);
+      color: white;
+      border-radius: 8px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: bold;
+      font-size: 16px;
+    }
+
+    .brand-title {
+      font-size: 1.25rem;
+      font-weight: 800;
+      color: #0f172a;
+      letter-spacing: -0.02em;
+    }
+
+    .brand-subtitle {
+      font-size: 0.8rem;
+      color: var(--text-muted);
+      margin-left: 6px;
+      font-weight: 500;
+    }
+
+    /* 탭 네비게이션 */
+    .tab-nav {
+      display: flex;
+      background: #f1f5f9;
+      border-radius: 10px;
+      padding: 4px;
+      gap: 4px;
+    }
+
+    .tab-btn {
+      padding: 8px 20px;
+      border: none;
+      background: transparent;
+      font-size: 0.95rem;
+      font-weight: 600;
+      color: var(--text-muted);
+      border-radius: 8px;
+      cursor: pointer;
+      transition: all 0.2s ease;
+    }
+
+    .tab-btn:hover {
+      color: var(--text);
+    }
+
+    .tab-btn.active {
+      background: #ffffff;
+      color: var(--primary);
+      box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+    }
+
+    /* 상단 학생 식별 및 교사 모드 */
+    .header-controls {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .student-badge {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      background: var(--primary-bg);
+      border: 1px solid #bfdbfe;
+      padding: 6px 12px;
+      border-radius: 20px;
+      font-size: 0.85rem;
+      font-weight: 600;
+      color: var(--primary);
+    }
+
+    .student-select {
+      border: 1px solid #cbd5e1;
+      padding: 4px 8px;
+      border-radius: 6px;
+      font-size: 0.85rem;
+      background: white;
+      color: var(--text);
+      cursor: pointer;
+      font-weight: 600;
+    }
+
+    .teacher-toggle-btn {
+      background: #f8fafc;
+      border: 1px solid var(--border);
+      color: var(--text-muted);
+      padding: 6px 12px;
+      border-radius: 6px;
+      font-size: 0.8rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+    .teacher-toggle-btn:hover {
+      background: #e2e8f0;
+      color: var(--text);
+    }
+
+    /* 안내 배너 */
+    .notice-banner {
+      background: #f8fafc;
+      border-bottom: 1px solid #f1f5f9;
+      padding: 8px 24px;
+      font-size: 0.85rem;
+      color: #475569;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 8px;
+    }
+
+    .notice-banner .highlight {
+      color: #2563eb;
+      font-weight: 600;
+    }
+
+    /* 메인 컨테이너 (좌우 2분할) */
+    .main-container {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      flex: 1;
+      min-height: calc(100vh - 120px);
+    }
+
+    @media (max-width: 960px) {
+      .main-container {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    /* 왼쪽: 시각화 영역 */
+    .viz-panel {
+      padding: 24px;
+      border-right: 1px solid var(--border);
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+      background: #fafafa;
+    }
+
+    .canvas-container {
+      background: #ffffff;
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 12px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      position: relative;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.04);
+    }
+
+    canvas#geomCanvas {
+      width: 100%;
+      max-width: 460px;
+      height: 400px;
+      display: block;
+      cursor: crosshair;
+    }
+
+    .canvas-legend {
+      display: flex;
+      gap: 16px;
+      font-size: 0.8rem;
+      margin-top: 8px;
+      color: var(--text-muted);
+    }
+
+    .legend-item {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .legend-color {
+      width: 12px;
+      height: 12px;
+      border-radius: 3px;
+    }
+
+    /* 시각화 제어 슬라이더 및 아르키메데스 버튼 */
+    .viz-controls {
+      background: #ffffff;
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 16px;
+      display: flex;
+      flex-direction: column;
+      gap: 14px;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.04);
+    }
+
+    .slider-group {
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+    }
+
+    .slider-header {
+      display: flex;
+      justify-content: space-between;
+      font-size: 0.88rem;
+      font-weight: 600;
+    }
+
+    .slider-value {
+      color: var(--primary);
+      font-weight: 700;
+    }
+
+    input[type="range"] {
+      width: 100%;
+      height: 6px;
+      border-radius: 4px;
+      accent-color: var(--primary);
+      background: #e2e8f0;
+      cursor: pointer;
+    }
+
+    .archimedes-group {
+      display: flex;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 8px;
+      padding-top: 4px;
+    }
+
+    .archimedes-label {
+      font-size: 0.82rem;
+      font-weight: 700;
+      color: #334155;
+    }
+
+    .arch-btn {
+      background: #f1f5f9;
+      border: 1px solid #cbd5e1;
+      border-radius: 6px;
+      padding: 4px 10px;
+      font-size: 0.82rem;
+      font-weight: 700;
+      color: #1e293b;
+      cursor: pointer;
+      transition: all 0.15s ease;
+    }
+
+    .arch-btn:hover {
+      background: var(--primary-light);
+      border-color: var(--primary);
+      color: white;
+    }
+
+    .arch-btn.active {
+      background: var(--primary);
+      color: white;
+      border-color: var(--primary);
+    }
+
+    /* 수치 비교 인디케이터 */
+    .metric-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 10px;
+      background: #ffffff;
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 14px;
+    }
+
+    .metric-box {
+      text-align: center;
+      padding: 6px;
+    }
+
+    .metric-label {
+      font-size: 0.76rem;
+      color: var(--text-muted);
+      margin-bottom: 2px;
+    }
+
+    .metric-value {
+      font-size: 1.05rem;
+      font-weight: 800;
+      color: #0f172a;
+    }
+
+    .metric-value.highlight {
+      color: var(--primary);
+    }
+    .metric-value.error-rate {
+      color: #dc2626;
+    }
+
+    /* 오른쪽: 수학적 대수 탐구 영역 */
+    .algebra-panel {
+      padding: 24px;
+      display: flex;
+      flex-direction: column;
+      gap: 20px;
+      background: #ffffff;
+      overflow-y: auto;
+    }
+
+    .task-card {
+      background: #ffffff;
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 20px;
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+    }
+
+    .task-title {
+      font-size: 1.15rem;
+      font-weight: 800;
+      color: #1e293b;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .task-desc {
+      font-size: 0.92rem;
+      color: #475569;
+      line-height: 1.6;
+      background: #f8fafc;
+      padding: 12px;
+      border-radius: 8px;
+      border-left: 4px solid var(--primary);
+    }
+
+    /* 입력 모드 토글 (타이핑 vs 손글씨) */
+    .input-mode-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-top: 4px;
+    }
+
+    .mode-switch {
+      display: flex;
+      background: #f1f5f9;
+      padding: 2px;
+      border-radius: 6px;
+      gap: 2px;
+    }
+
+    .mode-btn {
+      padding: 4px 10px;
+      font-size: 0.8rem;
+      font-weight: 600;
+      border: none;
+      background: transparent;
+      color: #64748b;
+      border-radius: 4px;
+      cursor: pointer;
+    }
+
+    .mode-btn.active {
+      background: white;
+      color: var(--primary);
+      box-shadow: 0 1px 2px rgba(0,0,0,0.05);
+    }
+
+    /* 입력 폼 */
+    .form-group {
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+    }
+
+    .form-label {
+      font-size: 0.88rem;
+      font-weight: 700;
+      color: #334155;
+    }
+
+    .input-field {
+      width: 100%;
+      padding: 10px 14px;
+      font-size: 0.95rem;
+      border: 1.5px solid #cbd5e1;
+      border-radius: 8px;
+      font-family: inherit;
+      transition: border-color 0.2s;
+    }
+
+    .input-field:focus {
+      outline: none;
+      border-color: var(--primary);
+      box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.15);
+    }
+
+    /* 빠른 수학 기호 버튼 */
+    .symbol-palette {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 6px;
+      margin-top: 4px;
+    }
+
+    .sym-btn {
+      background: #f8fafc;
+      border: 1px solid #cbd5e1;
+      border-radius: 4px;
+      padding: 3px 8px;
+      font-size: 0.82rem;
+      font-family: "KaTeX_Main", serif, sans-serif;
+      cursor: pointer;
+      color: #1e293b;
+    }
+
+    .sym-btn:hover {
+      background: #e2e8f0;
+      border-color: #94a3b8;
+    }
+
+    /* 손글씨 캔버스 영역 */
+    .handwriting-box {
+      display: none;
+      flex-direction: column;
+      gap: 8px;
+      margin-top: 8px;
+    }
+
+    .handwriting-box.visible {
+      display: flex;
+    }
+
+    .handwriting-canvas-wrap {
+      border: 1.5px dashed #94a3b8;
+      border-radius: 8px;
+      background: #ffffff;
+      position: relative;
+    }
+
+    canvas#drawCanvas {
+      width: 100%;
+      height: 180px;
+      display: block;
+      cursor: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="%231e40af" stroke-width="2"><path d="M12 19l7-7 3 3-7 7-3-3z"/><path d="M18 13l-1.5-7.5L2 2l3.5 14.5L13 18l5-5z"/></svg>') 0 16, crosshair;
+    }
+
+    .draw-tools {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 6px 10px;
+      background: #f8fafc;
+      border-top: 1px solid var(--border);
+      border-radius: 0 0 8px 8px;
+    }
+
+    .draw-tool-btn {
+      background: white;
+      border: 1px solid #cbd5e1;
+      border-radius: 4px;
+      padding: 4px 10px;
+      font-size: 0.8rem;
+      cursor: pointer;
+    }
+    .draw-tool-btn:hover {
+      background: #f1f5f9;
+    }
+
+    /* 액션 버튼 */
+    .submit-bar {
+      display: flex;
+      gap: 10px;
+      margin-top: 10px;
+    }
+
+    .primary-btn {
+      flex: 1;
+      background: var(--primary);
+      color: white;
+      border: none;
+      padding: 12px 20px;
+      font-size: 0.95rem;
+      font-weight: 700;
+      border-radius: 8px;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      transition: background 0.15s;
+    }
+
+    .primary-btn:hover {
+      background: #1d4ed8;
+    }
+
+    .primary-btn:disabled {
+      opacity: 0.5;
+      cursor: not-allowed;
+    }
+
+    /* 피드백 및 경고 박스 */
+    .alert-box {
+      display: none;
+      padding: 12px 16px;
+      border-radius: 8px;
+      font-size: 0.9rem;
+      line-height: 1.5;
+      animation: fadeIn 0.3s ease;
+    }
+
+    .alert-box.visible {
+      display: block;
+    }
+
+    .alert-box.warning {
+      background: var(--warning-bg);
+      border: 1px solid #fde68a;
+      color: var(--warning);
+    }
+
+    .alert-box.success {
+      background: var(--success-bg);
+      border: 1px solid #bbf7d0;
+      color: var(--success);
+    }
+
+    .alert-box.info {
+      background: var(--primary-bg);
+      border: 1px solid #bfdbfe;
+      color: var(--primary);
+    }
+
+    /* 공식 해설 카드 (KaTeX) */
+    .solution-card {
+      display: none;
+      background: linear-gradient(135deg, #f0fdf4 0%, #ffffff 100%);
+      border: 1.5px solid #86efac;
+      border-radius: 12px;
+      padding: 20px;
+      box-shadow: 0 4px 12px rgba(22, 101, 52, 0.08);
+      animation: slideUp 0.4s ease;
+    }
+
+    .solution-card.visible {
+      display: block;
+    }
+
+    .solution-header {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      font-size: 1.05rem;
+      font-weight: 800;
+      color: var(--success);
+      margin-bottom: 12px;
+      border-bottom: 1px solid #bbf7d0;
+      padding-bottom: 8px;
+    }
+
+    .solution-step {
+      margin-bottom: 14px;
+      font-size: 0.92rem;
+      color: #1e293b;
+    }
+
+    .solution-step strong {
+      display: block;
+      color: #166534;
+      margin-bottom: 4px;
+      font-size: 0.85rem;
+    }
+
+    .math-display {
+      background: #ffffff;
+      padding: 10px 14px;
+      border-radius: 6px;
+      border: 1px solid #e2e8f0;
+      overflow-x: auto;
+      margin: 6px 0;
+      text-align: center;
+    }
+
+    /* 교사 전용 관리 패널 (모달 또는 슬라이드) */
+    .teacher-panel {
+      display: none;
+      background: #f8fafc;
+      border: 1px solid #cbd5e1;
+      border-radius: 10px;
+      padding: 14px;
+      margin-top: 10px;
+    }
+    .teacher-panel.visible {
+      display: block;
+    }
+
+    .teacher-panel table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 0.8rem;
+      margin-top: 8px;
+    }
+
+    .teacher-panel th, .teacher-panel td {
+      border: 1px solid #e2e8f0;
+      padding: 6px 8px;
+      text-align: left;
+    }
+
+    .teacher-panel th {
+      background: #f1f5f9;
+      font-weight: 700;
+    }
+
+    .approve-btn {
+      background: #16a34a;
+      color: white;
+      border: none;
+      padding: 2px 8px;
+      border-radius: 4px;
+      cursor: pointer;
+      font-size: 0.75rem;
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; }
+      to { opacity: 1; }
+    }
+
+    @keyframes slideUp {
+      from { opacity: 0; transform: translateY(10px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- 상단 네비게이션 헤더 -->
+  <header>
+    <div class="brand">
+      <div class="brand-icon">$\pi$</div>
+      <div>
+        <span class="brand-title">미분과 원</span>
+        <span class="brand-subtitle">삼각함수의 극한과 아르키메데스의 발견</span>
+      </div>
+    </div>
+
+    <!-- 탭 전환 버튼 -->
+    <nav class="tab-nav">
+      <button class="tab-btn active" id="tabBtnLength" onclick="switchTab('length')">길이 탐구</button>
+      <button class="tab-btn" id="tabBtnArea" onclick="switchTab('area')">넓이 탐구</button>
+    </nav>
+
+    <!-- 사용자 식별 및 컨트롤 -->
+    <div class="header-controls">
+      <div class="student-badge">
+        <span>학생 ID:</span>
+        <select class="student-select" id="studentSelect" onchange="onStudentChange()">
+          <option value="S01" data-name="민트">S01 (민트)</option>
+          <option value="S02" data-name="레몬">S02 (레몬)</option>
+        </select>
+      </div>
+      <button class="teacher-toggle-btn" onclick="toggleTeacherPanel()">선생님 검토 모드</button>
+    </div>
+  </header>
+
+  <!-- 개인정보 보호 및 실시간 관찰 안내 -->
+  <div class="notice-banner">
+    <div>
+      <span>📢</span>
+      <span class="highlight">선생님 지도 안내:</span> 학생 화면에 입력한 내용은 선생님이 실시간으로 볼 수 있습니다. (※ 학생의 개인정보는 일절 수집하지 않으며, 가상 학생 코드로만 관리됩니다.)
+    </div>
+    <div id="connectionStatus" style="font-size:0.75rem; color:#64748b;">동기화 준비됨</div>
+  </div>
+
+  <!-- 교사 검토 패널 (토글 가능) -->
+  <div id="teacherPanel" class="teacher-panel" style="margin: 12px 24px;">
+    <div style="display:flex; justify-content:space-between; align-items:center;">
+      <strong style="color:#1e3a8a;">👨‍🏫 교사용 제출 현황 실시간 모니터링 및 승인</strong>
+      <button onclick="refreshTeacherList()" class="sym-btn" style="padding:4px 8px;">새로고침</button>
+    </div>
+    <div style="overflow-x:auto;">
+      <table id="teacherTable">
+        <thead>
+          <tr>
+            <th>제출시간</th>
+            <th>학생코드</th>
+            <th>닉네임</th>
+            <th>탐구구분</th>
+            <th>중심각</th>
+            <th>공식입력</th>
+            <th>방식</th>
+            <th>자동판정</th>
+            <th>교사승인</th>
+            <th>조치</th>
+          </tr>
+        </thead>
+        <tbody id="teacherTableBody">
+          <tr><td colspan="10" style="text-align:center; color:#94a3b8;">제출 기록을 불러오는 중...</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- 메인 2분할 레이아웃 -->
+  <main class="main-container">
+    
+    <!-- 왼쪽: 시각화 영역 (HTML5 Canvas) -->
+    <section class="viz-panel">
+      <div class="canvas-container">
+        <canvas id="geomCanvas" width="460" height="400"></canvas>
+        <div class="canvas-legend">
+          <div class="legend-item">
+            <span class="legend-color" style="background:#2563eb;"></span>
+            <span>정n각형</span>
+          </div>
+          <div class="legend-item">
+            <span class="legend-color" style="background:#94a3b8;"></span>
+            <span>외접원 (반지름 R)</span>
+          </div>
+          <div class="legend-item">
+            <span class="legend-color" style="background:rgba(239, 68, 68, 0.4);"></span>
+            <span>오차 영역(빈틈)</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- 인터랙티브 슬라이더 및 아르키메데스 버튼 -->
+      <div class="viz-controls">
+        <!-- R 슬라이더 -->
+        <div class="slider-group">
+          <div class="slider-header">
+            <span>반지름 ($R$)</span>
+            <span class="slider-value" id="rValueText">1.0</span>
+          </div>
+          <input type="range" id="rSlider" min="1" max="10" step="0.5" value="1" oninput="onVisualParamChange()">
+        </div>
+
+        <!-- n 슬라이더 -->
+        <div class="slider-group">
+          <div class="slider-header">
+            <span>변의 수 ($n$)</span>
+            <span class="slider-value" id="nValueText">3</span>
+          </div>
+          <input type="range" id="nSlider" min="3" max="100" step="1" value="3" oninput="onVisualParamChange()">
+        </div>
+
+        <!-- 아르키메데스 주요 다각형 바로가기 -->
+        <div class="archimedes-group">
+          <span class="archimedes-label">아르키메데스 다각형:</span>
+          <button class="arch-btn active" onclick="setN(3)">n = 3</button>
+          <button class="arch-btn" onclick="setN(4)">n = 4</button>
+          <button class="arch-btn" onclick="setN(6)">n = 6</button>
+          <button class="arch-btn" onclick="setN(12)">n = 12</button>
+          <button class="arch-btn" onclick="setN(96)">n = 96</button>
+        </div>
+      </div>
+
+      <!-- 수치 및 오차 실시간 비교 지표 -->
+      <div class="metric-grid">
+        <div class="metric-box">
+          <div class="metric-label" id="polyMetricLabel">정n각형 둘레 ($L_n$)</div>
+          <div class="metric-value highlight" id="polyMetricVal">5.196</div>
+        </div>
+        <div class="metric-box">
+          <div class="metric-label" id="circleMetricLabel">원의 둘레 ($2\pi R$)</div>
+          <div class="metric-value" id="circleMetricVal">6.283</div>
+        </div>
+        <div class="metric-box">
+          <div class="metric-label">오차 비율</div>
+          <div class="metric-value error-rate" id="errorRateVal">17.29%</div>
+        </div>
+      </div>
+    </section>
+
+    <!-- 오른쪽: 수학적 대수 탐구 영역 -->
+    <section class="algebra-panel">
+      
+      <!-- 탐구 과제 카드 -->
+      <div class="task-card">
+        <div class="task-title">
+          <span id="taskBadge" style="background:#dbeafe; color:#1d4ed8; padding:3px 8px; border-radius:6px; font-size:0.85rem;">활동 1</span>
+          <span id="taskHeadingTitle">정n각형의 둘레와 원의 둘레의 극한 탐구</span>
+        </div>
+
+        <div class="task-desc" id="taskDescContent">
+          원에 내접하는 정$n$각형을 $n$개의 합동인 이등변삼각형으로 분할해 보세요.
+          중심각의 크기를 구하고, 원의 중심에서 한 변에 수선을 내려 직각삼각형의 삼각비를 이용하여 정$n$각형의 둘레 $L_n$의 일반식을 완성해 보세요.
+        </div>
+
+        <!-- 입력 방식 선택 토글 -->
+        <div class="input-mode-header">
+          <span class="form-label">나의 탐구 풀이 작성</span>
+          <div class="mode-switch">
+            <button class="mode-btn active" id="btnModeType" onclick="setInputMode('type')">타이핑 입력</button>
+            <button class="mode-btn" id="btnModeDraw" onclick="setInputMode('draw')">손글씨 필기</button>
+          </div>
+        </div>
+
+        <!-- 타이핑 입력 폼 -->
+        <div id="typingForm" style="display:flex; flex-direction:column; gap:12px;">
+          <!-- 1. 중심각 -->
+          <div class="form-group">
+            <label class="form-label" for="centralAngleInput">
+              1. 정$n$각형의 중심각의 크기 (호도법 또는 라디안 식):
+            </label>
+            <input type="text" id="centralAngleInput" class="input-field" placeholder="예: 2pi/n 또는 2π/n">
+            <div class="symbol-palette">
+              <span style="font-size:0.75rem; color:#64748b; line-height:24px;">기호 입력:</span>
+              <button class="sym-btn" onclick="insertSymbol('centralAngleInput', '2\\pi/n')">2π/n</button>
+              <button class="sym-btn" onclick="insertSymbol('centralAngleInput', '\\pi')">π</button>
+              <button class="sym-btn" onclick="insertSymbol('centralAngleInput', 'n')">n</button>
+              <button class="sym-btn" onclick="insertSymbol('centralAngleInput', '/')">/</button>
+            </div>
+          </div>
+
+          <!-- 2. 둘레 또는 넓이 식 -->
+          <div class="form-group">
+            <label class="form-label" id="formulaInputLabel" for="formulaInput">
+              2. 정$n$각형의 둘레 $L_n$ 표현식:
+            </label>
+            <input type="text" id="formulaInput" class="input-field" placeholder="예: 2*n*R*sin(pi/n)">
+            <div class="symbol-palette" id="formulaSymbolPalette">
+              <span style="font-size:0.75rem; color:#64748b; line-height:24px;">기호 입력:</span>
+              <button class="sym-btn" onclick="insertSymbol('formulaInput', '2*n*R*sin(\\pi/n)')">2nR sin(π/n)</button>
+              <button class="sym-btn" onclick="insertSymbol('formulaInput', 'sin(\\pi/n)')">sin(π/n)</button>
+              <button class="sym-btn" onclick="insertSymbol('formulaInput', 'R')">R</button>
+              <button class="sym-btn" onclick="insertSymbol('formulaInput', 'n')">n</button>
+              <button class="sym-btn" onclick="insertSymbol('formulaInput', '\\pi')">π</button>
+            </div>
+          </div>
+        </div>
+
+        <!-- 손글씨 필기 캔버스 폼 -->
+        <div id="drawingForm" class="handwriting-box">
+          <label class="form-label">태블릿 또는 마우스로 직각삼각형 및 수식을 직접 유도해 보세요:</label>
+          <div class="handwriting-canvas-wrap">
+            <canvas id="drawCanvas" width="460" height="180"></canvas>
+            <div class="draw-tools">
+              <div style="display:flex; gap:6px; align-items:center;">
+                <button class="draw-tool-btn" onclick="setDrawColor('#0f172a')">검정 펜</button>
+                <button class="draw-tool-btn" onclick="setDrawColor('#2563eb')">파랑 펜</button>
+                <button class="draw-tool-btn" onclick="setDrawColor('#dc2626')">빨강 펜</button>
+              </div>
+              <button class="draw-tool-btn" style="color:#b91c1c;" onclick="clearDrawCanvas()">전체 지우기</button>
+            </div>
+          </div>
+        </div>
+
+        <!-- 제출 및 정답 확인 바 -->
+        <div class="submit-bar">
+          <button class="primary-btn" id="submitBtn" onclick="submitSolution()">
+            <span>📝 선생님께 제출 및 정답 확인</span>
+          </button>
+        </div>
+
+        <!-- 오답 경고 박스 -->
+        <div id="wrongFeedbackBox" class="alert-box warning">
+          <strong id="wrongTitle">💡 다시 생각해보세요!</strong>
+          <p id="wrongMessage">중심에서 변에 수선을 내려 직각삼각형을 관찰해 보세요.</p>
+        </div>
+
+        <!-- 정답 확인 박스 -->
+        <div id="correctFeedbackBox" class="alert-box success">
+          <strong>🎉 정답입니다!</strong>
+          <p>훌륭합니다! 탐구한 수식이 정답으로 판정(승인)되었습니다. 아래의 수학적 극한 해설 카드를 확인해 보세요.</p>
+        </div>
+      </div>
+
+      <!-- 정답 해설 공식 카드 (초기에는 숨김, 정답 시 KaTeX 렌더링) -->
+      <div id="solutionCard" class="solution-card">
+        <div class="solution-header">
+          <span>✨</span>
+          <span id="solutionCardTitle">길이 탐구 공식 및 극한 연결 해설</span>
+        </div>
+
+        <div id="lengthSolutionContent">
+          <div class="solution-step">
+            <strong>1. 중심각의 크기</strong>
+            <div class="math-display">$$\text{중심각} = \frac{2\pi}{n}$$</div>
+          </div>
+
+          <div class="solution-step">
+            <strong>2. 정$n$각형 한 변의 길이 및 둘레 $L_n$</strong>
+            <p style="font-size:0.88rem; color:#475569;">
+              중심에서 변에 수선을 내리면 빗변이 $R$이고 꼭지각이 $\frac{\pi}{n}$인 직각삼각형이 만들어집니다.
+              따라서 한 변의 길이는 $2R \sin\left(\frac{\pi}{n}\right)$이며, 총 $n$개의 변을 가집니다.
+            </p>
+            <div class="math-display">$$L_n = 2nR \sin\left(\frac{\pi}{n}\right)$$</div>
+          </div>
+
+          <div class="solution-step">
+            <strong>3. 극한 연결 (삼각함수의 극한과 원의 둘레)</strong>
+            <p style="font-size:0.88rem; color:#475569;">
+              $n \to \infty$일 때, $\frac{\pi}{n} \to 0$이므로 $\lim_{\theta \to 0}\frac{\sin\theta}{\theta} = 1$을 적용합니다:
+            </p>
+            <div class="math-display">
+              $$\lim_{n \to \infty} L_n = 2\pi R \lim_{n \to \infty} \frac{\sin(\pi/n)}{\pi/n} = 2\pi R \times 1 = 2\pi R$$
+            </div>
+            <p style="font-size:0.86rem; color:#15803d; font-weight:600; text-align:center;">
+              ☞ 정$n$각형의 변의 수를 무한히 늘리면 직관적으로 원의 둘레 공식 $2\pi R$에 완벽히 수렴함을 발견할 수 있습니다!
+            </p>
+          </div>
+        </div>
+
+        <div id="areaSolutionContent" style="display:none;">
+          <div class="solution-step">
+            <strong>1. 중심각의 크기</strong>
+            <div class="math-display">$$\text{중심각} = \frac{2\pi}{n}$$</div>
+          </div>
+
+          <div class="solution-step">
+            <strong>2. 이등변삼각형의 넓이와 정$n$각형 넓이 $S_n$</strong>
+            <p style="font-size:0.88rem; color:#475569;">
+              두 변의 길이가 $R$이고 끼인각이 $\frac{2\pi}{n}$인 삼각형 1개의 넓이는 $\frac{1}{2}R^2 \sin\left(\frac{2\pi}{n}\right)$입니다.
+              따라서 정$n$각형의 전체 넓이는 다음과 같습니다:
+            </p>
+            <div class="math-display">$$S_n = \frac{1}{2} n R^2 \sin\left(\frac{2\pi}{n}\right)$$</div>
+          </div>
+
+          <div class="solution-step">
+            <strong>3. 극한 연결 (삼각함수의 극한과 원의 넓이)</strong>
+            <p style="font-size:0.88rem; color:#475569;">
+              $n \to \infty$일 때, $\frac{2\pi}{n} \to 0$이므로 삼각함수의 극한 공식을 적용합니다:
+            </p>
+            <div class="math-display">
+              $$\lim_{n \to \infty} S_n = \pi R^2 \lim_{n \to \infty} \frac{\sin(2\pi/n)}{2\pi/n} = \pi R^2 \times 1 = \pi R^2$$
+            </div>
+            <p style="font-size:0.86rem; color:#15803d; font-weight:600; text-align:center;">
+              ☞ 정$n$각형의 넓이의 극한이 우리가 잘 알고 있는 원의 넓이 공식 $\pi R^2$로 수렴함을 증명합니다!
+            </p>
+          </div>
+        </div>
+
+      </div>
+
+    </section>
+  </main>
+
+  <script>
+    // --- 전역 상태 ---
+    let currentTab = 'length'; // 'length' | 'area'
+    let currentInputMode = 'type'; // 'type' | 'draw'
+    let currentR = 1.0;
+    let currentN = 3;
+    let isDrawing = false;
+    let drawCtx = null;
+    let currentDrawColor = '#0f172a';
+
+    // 학생별 승인 상태 저장 (클라이언트 캐시)
+    const approvalState = {
+      S01: { length: false, area: false },
+      S02: { length: false, area: false }
+    };
+
+    // --- 초기화 ---
+    window.addEventListener('DOMContentLoaded', () => {
+      initCanvas();
+      initDrawCanvas();
+      renderAllMath();
+      drawGeometry();
+      updateMetrics();
+      loadInitialData();
+    });
+
+    function renderAllMath() {
+      if (window.renderMathInElement) {
+        renderMathInElement(document.body, {
+          delimiters: [
+            { left: "$$", right: "$$", display: true },
+            { left: "$", right: "$", display: false }
+          ],
+          throwOnError: false
+        });
+      }
+    }
+
+    // --- 탭 전환 ---
+    function switchTab(tab) {
+      currentTab = tab;
+      const btnLen = document.getElementById('tabBtnLength');
+      const btnArea = document.getElementById('tabBtnArea');
+      const taskBadge = document.getElementById('taskBadge');
+      const taskHeadingTitle = document.getElementById('taskHeadingTitle');
+      const taskDescContent = document.getElementById('taskDescContent');
+      const formulaInputLabel = document.getElementById('formulaInputLabel');
+      const formulaInput = document.getElementById('formulaInput');
+      const polyMetricLabel = document.getElementById('polyMetricLabel');
+      const circleMetricLabel = document.getElementById('circleMetricLabel');
+      const formulaSymbolPalette = document.getElementById('formulaSymbolPalette');
+      const lengthSol = document.getElementById('lengthSolutionContent');
+      const areaSol = document.getElementById('areaSolutionContent');
+      const solCardTitle = document.getElementById('solutionCardTitle');
+
+      // 피드백 초기화
+      hideFeedback();
+
+      if (tab === 'length') {
+        btnLen.classList.add('active');
+        btnArea.classList.remove('active');
+        taskBadge.innerText = '활동 1';
+        taskHeadingTitle.innerText = '정n각형의 둘레와 원의 둘레의 극한 탐구';
+        taskDescContent.innerHTML = '원에 내접하는 정$n$각형을 $n$개의 합동인 이등변삼각형으로 분할해 보세요. 중심각의 크기를 구하고, 중심에서 한 변에 수선을 내려 직각삼각형의 삼각비를 이용하여 정$n$각형의 둘레 $L_n$의 일반식을 완성해 보세요.';
+        formulaInputLabel.innerHTML = '2. 정$n$각형의 둘레 $L_n$ 표현식:';
+        formulaInput.placeholder = '예: 2*n*R*sin(pi/n) 또는 sin(pi/n)';
+        polyMetricLabel.innerHTML = '정$n$각형 둘레 ($L_n$)';
+        circleMetricLabel.innerHTML = '원의 둘레 ($2\\pi R$)';
+        solCardTitle.innerText = '길이 탐구 공식 및 극한 연결 해설';
+        lengthSol.style.display = 'block';
+        areaSol.style.display = 'none';
+
+        formulaSymbolPalette.innerHTML = `
+          <span style="font-size:0.75rem; color:#64748b; line-height:24px;">기호 입력:</span>
+          <button class="sym-btn" onclick="insertSymbol('formulaInput', '2*n*R*sin(\\\\pi/n)')">2nR sin(π/n)</button>
+          <button class="sym-btn" onclick="insertSymbol('formulaInput', 'sin(\\\\pi/n)')">sin(π/n)</button>
+          <button class="sym-btn" onclick="insertSymbol('formulaInput', 'R')">R</button>
+          <button class="sym-btn" onclick="insertSymbol('formulaInput', 'n')">n</button>
+          <button class="sym-btn" onclick="insertSymbol('formulaInput', '\\\\pi')">π</button>
+        `;
+      } else {
+        btnLen.classList.remove('active');
+        btnArea.classList.add('active');
+        taskBadge.innerText = '활동 2';
+        taskHeadingTitle.innerText = '정n각형의 넓이와 원의 넓이의 극한 탐구';
+        taskDescContent.innerHTML = '원에 내접하는 정$n$각형의 넓이를 구하기 위해, 중심각이 $\\frac{2\\pi}{n}$이고 두 변이 $R$인 이등변삼각형 하나의 넓이를 구한 뒤 전체 $n$개 삼각형의 넓이의 합 $S_n$을 찾아보세요.';
+        formulaInputLabel.innerHTML = '2. 정$n$각형의 넓이 $S_n$ 표현식:';
+        formulaInput.placeholder = '예: 1/2*n*R^2*sin(2pi/n) 또는 sin(2pi/n)';
+        polyMetricLabel.innerHTML = '정$n$각형 넓이 ($S_n$)';
+        circleMetricLabel.innerHTML = '원의 넓이 ($\\pi R^2$)';
+        solCardTitle.innerText = '넓이 탐구 공식 및 극한 연결 해설';
+        lengthSol.style.display = 'none';
+        areaSol.style.display = 'block';
+
+        formulaSymbolPalette.innerHTML = `
+          <span style="font-size:0.75rem; color:#64748b; line-height:24px;">기호 입력:</span>
+          <button class="sym-btn" onclick="insertSymbol('formulaInput', '1/2*n*R^2*sin(2\\\\pi/n)')">1/2 n R² sin(2π/n)</button>
+          <button class="sym-btn" onclick="insertSymbol('formulaInput', 'sin(2\\\\pi/n)')">sin(2π/n)</button>
+          <button class="sym-btn" onclick="insertSymbol('formulaInput', 'R^2')">R²</button>
+          <button class="sym-btn" onclick="insertSymbol('formulaInput', 'n')">n</button>
+          <button class="sym-btn" onclick="insertSymbol('formulaInput', '\\\\pi')">π</button>
+        `;
+      }
+
+      renderAllMath();
+      updateMetrics();
+      checkCurrentStudentStatus();
+    }
+
+    // --- 시각화 캔버스 (원 + 정n각형 + 오차 빈틈) ---
+    function initCanvas() {
+      const canvas = document.getElementById('geomCanvas');
+      const dpr = window.devicePixelRatio || 1;
+      const rect = canvas.getBoundingClientRect();
+      canvas.width = (rect.width || 460) * dpr;
+      canvas.height = (rect.height || 400) * dpr;
+      const ctx = canvas.getContext('2d');
+      ctx.scale(dpr, dpr);
+    }
+
+    function drawGeometry() {
+      const canvas = document.getElementById('geomCanvas');
+      const ctx = canvas.getContext('2d');
+      const rect = canvas.getBoundingClientRect();
+      const width = rect.width || 460;
+      const height = rect.height || 400;
+
+      ctx.clearRect(0, 0, width, height);
+
+      const centerX = width / 2;
+      const centerY = height / 2;
+      // 화면 반경 (R 슬라이더 1~10에 따라 약간 스케일 변화 반영, 기본 시각적 반경 130~160)
+      const baseRadius = Math.min(width, height) * 0.38;
+      const visualR = baseRadius * (0.85 + (currentR - 1) * 0.03);
+
+      const n = currentN;
+      const angleStep = (2 * Math.PI) / n;
+
+      // 1. 꼭짓점 좌표 계산
+      const points = [];
+      for (let i = 0; i < n; i++) {
+        // 꼭대기부터 시작하도록 -PI/2 오프셋
+        const theta = -Math.PI / 2 + i * angleStep;
+        points.push({
+          x: centerX + visualR * Math.cos(theta),
+          y: centerY + visualR * Math.sin(theta),
+          theta: theta
+        });
+      }
+
+      // 2. 오차 영역(원호와 다각형 변 사이의 빈틈 - 활꼴) 채우기 (반투명 빨강/오렌지)
+      ctx.save();
+      ctx.fillStyle = 'rgba(239, 68, 68, 0.40)'; // 오차 영역 반투명 강조
+      for (let i = 0; i < n; i++) {
+        const p1 = points[i];
+        const p2 = points[(i + 1) % n];
+        const theta1 = p1.theta;
+        const theta2 = theta1 + angleStep;
+
+        ctx.beginPath();
+        ctx.moveTo(p1.x, p1.y);
+        ctx.arc(centerX, centerY, visualR, theta1, theta2, false);
+        ctx.lineTo(p1.x, p1.y);
+        ctx.closePath();
+        ctx.fill();
+      }
+      ctx.restore();
+
+      // 3. 외접원 테두리 그리기
+      ctx.save();
+      ctx.strokeStyle = '#64748b';
+      ctx.lineWidth = 1.8;
+      ctx.setLineDash([4, 4]);
+      ctx.beginPath();
+      ctx.arc(centerX, centerY, visualR, 0, 2 * Math.PI);
+      ctx.stroke();
+      ctx.restore();
+
+      // 4. 정n각형 내부 채우기 및 외곽선
+      ctx.save();
+      ctx.beginPath();
+      ctx.moveTo(points[0].x, points[0].y);
+      for (let i = 1; i < n; i++) {
+        ctx.lineTo(points[i].x, points[i].y);
+      }
+      ctx.closePath();
+      ctx.fillStyle = 'rgba(59, 130, 246, 0.15)'; // 다각형 내부
+      ctx.fill();
+      ctx.strokeStyle = '#2563eb';
+      ctx.lineWidth = 2.2;
+      ctx.stroke();
+      ctx.restore();
+
+      // 5. 중심점 및 반지름 선분 표시
+      ctx.save();
+      // 중심점
+      ctx.beginPath();
+      ctx.arc(centerX, centerY, 4, 0, 2 * Math.PI);
+      ctx.fillStyle = '#1e3a8a';
+      ctx.fill();
+
+      // 첫 번째 꼭짓점으로 가는 반지름 R 선분
+      ctx.beginPath();
+      ctx.moveTo(centerX, centerY);
+      ctx.lineTo(points[0].x, points[0].y);
+      ctx.strokeStyle = '#2563eb';
+      ctx.lineWidth = 1.5;
+      ctx.stroke();
+
+      // 두 번째 꼭짓점으로 가는 선분 (중심각 표현)
+      if (n <= 24) {
+        ctx.beginPath();
+        ctx.moveTo(centerX, centerY);
+        ctx.lineTo(points[1].x, points[1].y);
+        ctx.strokeStyle = '#94a3b8';
+        ctx.lineWidth = 1.2;
+        ctx.stroke();
+
+        // 중심각 호
+        ctx.beginPath();
+        const arcR = Math.min(35, visualR * 0.3);
+        ctx.arc(centerX, centerY, arcR, points[0].theta, points[1].theta, false);
+        ctx.strokeStyle = '#f59e0b';
+        ctx.lineWidth = 2;
+        ctx.stroke();
+      }
+
+      // 꼭짓점 점 표시
+      if (n <= 30) {
+        for (let i = 0; i < n; i++) {
+          ctx.beginPath();
+          ctx.arc(points[i].x, points[i].y, 3, 0, 2 * Math.PI);
+          ctx.fillStyle = '#1d4ed8';
+          ctx.fill();
+        }
+      }
+
+      // 라벨 텍스트
+      ctx.fillStyle = '#1e293b';
+      ctx.font = 'bold 12px sans-serif';
+      ctx.fillText(`R = ${currentR}`, centerX + 8, centerY - visualR * 0.45);
+      ctx.fillText(`n = ${n}`, points[0].x - 18, points[0].y - 8);
+
+      ctx.restore();
+    }
+
+    // --- 슬라이더 및 아르키메데스 버튼 제어 ---
+    function onVisualParamChange() {
+      currentR = parseFloat(document.getElementById('rSlider').value);
+      currentN = parseInt(document.getElementById('nSlider').value);
+
+      document.getElementById('rValueText').innerText = currentR.toFixed(1);
+      document.getElementById('nValueText').innerText = currentN;
+
+      updateArchimedesActiveButton();
+      drawGeometry();
+      updateMetrics();
+    }
+
+    function setN(nVal) {
+      currentN = nVal;
+      document.getElementById('nSlider').value = nVal;
+      document.getElementById('nValueText').innerText = nVal;
+      updateArchimedesActiveButton();
+      drawGeometry();
+      updateMetrics();
+    }
+
+    function updateArchimedesActiveButton() {
+      const btns = document.querySelectorAll('.arch-btn');
+      btns.forEach(btn => {
+        if (btn.innerText.includes(`n = ${currentN}`)) {
+          btn.classList.add('active');
+        } else {
+          btn.classList.remove('active');
+        }
+      });
+    }
+
+    // 수치 및 오차 계산 업데이트
+    function updateMetrics() {
+      const R = currentR;
+      const n = currentN;
+
+      if (currentTab === 'length') {
+        const L_n = 2 * n * R * Math.sin(Math.PI / n);
+        const L_circle = 2 * Math.PI * R;
+        const err = Math.abs(L_circle - L_n) / L_circle * 100;
+
+        document.getElementById('polyMetricVal').innerText = L_n.toFixed(4);
+        document.getElementById('circleMetricVal').innerText = L_circle.toFixed(4);
+        document.getElementById('errorRateVal').innerText = err.toFixed(2) + '%';
+      } else {
+        const S_n = 0.5 * n * Math.pow(R, 2) * Math.sin((2 * Math.PI) / n);
+        const S_circle = Math.PI * Math.pow(R, 2);
+        const err = Math.abs(S_circle - S_n) / S_circle * 100;
+
+        document.getElementById('polyMetricVal').innerText = S_n.toFixed(4);
+        document.getElementById('circleMetricVal').innerText = S_circle.toFixed(4);
+        document.getElementById('errorRateVal').innerText = err.toFixed(2) + '%';
+      }
+    }
+
+    // --- 수식 기호 입력 헬퍼 ---
+    function insertSymbol(targetId, symbol) {
+      const input = document.getElementById(targetId);
+      const start = input.selectionStart || input.value.length;
+      const end = input.selectionEnd || input.value.length;
+      const text = input.value;
+      input.value = text.substring(0, start) + symbol + text.substring(end);
+      input.focus();
+      input.selectionStart = input.selectionEnd = start + symbol.length;
+    }
+
+    // --- 손글씨 캔버스 로직 ---
+    function initDrawCanvas() {
+      const canvas = document.getElementById('drawCanvas');
+      drawCtx = canvas.getContext('2d');
+
+      const startDrawing = (e) => {
+        isDrawing = true;
+        const pos = getPos(e, canvas);
+        drawCtx.beginPath();
+        drawCtx.moveTo(pos.x, pos.y);
+      };
+
+      const draw = (e) => {
+        if (!isDrawing) return;
+        const pos = getPos(e, canvas);
+        drawCtx.lineTo(pos.x, pos.y);
+        drawCtx.strokeStyle = currentDrawColor;
+        drawCtx.lineWidth = 2.5;
+        drawCtx.lineCap = 'round';
+        drawCtx.lineJoin = 'round';
+        drawCtx.stroke();
+      };
+
+      const stopDrawing = () => {
+        if (isDrawing) {
+          drawCtx.closePath();
+          isDrawing = false;
+        }
+      };
+
+      canvas.addEventListener('mousedown', startDrawing);
+      canvas.addEventListener('mousemove', draw);
+      canvas.addEventListener('mouseup', stopDrawing);
+      canvas.addEventListener('mouseleave', stopDrawing);
+
+      // 터치 지원 (모바일/태블릿)
+      canvas.addEventListener('touchstart', (e) => {
+        e.preventDefault();
+        startDrawing(e.touches[0]);
+      }, { passive: false });
+      canvas.addEventListener('touchmove', (e) => {
+        e.preventDefault();
+        draw(e.touches[0]);
+      }, { passive: false });
+      canvas.addEventListener('touchend', stopDrawing);
+    }
+
+    function getPos(e, canvas) {
+      const rect = canvas.getBoundingClientRect();
+      const scaleX = canvas.width / rect.width;
+      const scaleY = canvas.height / rect.height;
+      return {
+        x: (e.clientX - rect.left) * scaleX,
+        y: (e.clientY - rect.top) * scaleY
+      };
+    }
+
+    function setInputMode(mode) {
+      currentInputMode = mode;
+      const btnType = document.getElementById('btnModeType');
+      const btnDraw = document.getElementById('btnModeDraw');
+      const typeForm = document.getElementById('typingForm');
+      const drawForm = document.getElementById('drawingForm');
+
+      if (mode === 'type') {
+        btnType.classList.add('active');
+        btnDraw.classList.remove('active');
+        typeForm.style.display = 'flex';
+        drawForm.classList.remove('visible');
+      } else {
+        btnType.classList.remove('active');
+        btnDraw.classList.add('active');
+        drawForm.classList.add('visible');
+      }
+    }
+
+    function setDrawColor(color) {
+      currentDrawColor = color;
+    }
+
+    function clearDrawCanvas() {
+      const canvas = document.getElementById('drawCanvas');
+      drawCtx.clearRect(0, 0, canvas.width, canvas.height);
+    }
+
+    // --- 정답 판정 및 제출 로직 ---
+    function submitSolution() {
+      const studentSelect = document.getElementById('studentSelect');
+      const studentCode = studentSelect.value;
+      const studentName = studentSelect.options[studentSelect.selectedIndex].getAttribute('data-name');
+      const centralAngle = document.getElementById('centralAngleInput').value.trim();
+      const formulaAnswer = document.getElementById('formulaInput').value.trim();
+
+      // 판정 검사
+      let isCorrect = false;
+      const cleanAngle = centralAngle.toLowerCase().replace(/\s+/g, '');
+      const cleanFormula = formulaAnswer.toLowerCase().replace(/\s+/g, '');
+
+      // 정답 조건:
+      // 길이 탐구: 중심각에 n이 포함되고, 둘레에 sin(π/n) 또는 sin(pi/n) 포함
+      // 넓이 탐구: 중심각에 n이 포함되고, 넓이에 sin(2π/n) 또는 sin(2pi/n) 포함
+      const hasAngleN = cleanAngle.includes('n');
+
+      if (currentTab === 'length') {
+        const hasLengthSine = cleanFormula.includes('sin(pi/n)') || cleanFormula.includes('sin(π/n)') || cleanFormula.includes('sin(pi//n)');
+        if (hasAngleN && hasLengthSine) {
+          isCorrect = true;
+        }
+      } else {
+        const hasAreaSine = cleanFormula.includes('sin(2pi/n)') || cleanFormula.includes('sin(2π/n)') || cleanFormula.includes('sin(2*pi/n)') || cleanFormula.includes('sin(2*π/n)');
+        if (hasAngleN && hasAreaSine) {
+          isCorrect = true;
+        }
+      }
+
+      // 손글씨 모드인 경우 사용자가 그림을 그렸다면 교사 승인 대기로 제출 가능
+      if (currentInputMode === 'draw') {
+        // 손글씨는 교사 직접 승인 및 제출
+        showFeedbackInfo('손글씨 풀이가 선생님께 제출되었습니다. 선생님의 승인을 기다려주세요.');
+      }
+
+      const submitBtn = document.getElementById('submitBtn');
+      submitBtn.disabled = true;
+      submitBtn.innerText = '제출 및 검증 중...';
+
+      if (isCorrect) {
+        showFeedbackSuccess();
+        approvalState[studentCode][currentTab] = true;
+      } else if (currentInputMode === 'type') {
+        showFeedbackWrong();
+      }
+
+      // Google Apps Script 백엔드로 비동기 제출 기록 (스프레드시트 반영)
+      const payload = {
+        studentCode: studentCode,
+        studentName: studentName,
+        taskType: currentTab === 'length' ? '길이 탐구' : '넓이 탐구',
+        centralAngle: centralAngle,
+        formulaAnswer: formulaAnswer,
+        inputMode: currentInputMode === 'type' ? '타이핑' : '손글씨',
+        solutionSummary: currentInputMode === 'type' ? `각: ${centralAngle}, 식: ${formulaAnswer}` : '손글씨 필기 제출',
+        isAutoCorrect: isCorrect
+      };
+
+      if (typeof google !== 'undefined' && google.script && google.script.run) {
+        google.script.run
+          .withSuccessHandler((res) => {
+            submitBtn.disabled = false;
+            submitBtn.innerText = '📝 선생님께 제출 및 정답 확인';
+            document.getElementById('connectionStatus').innerText = '시트 저장 완료 (' + new Date().toLocaleTimeString() + ')';
+            refreshTeacherList();
+          })
+          .withFailureHandler((err) => {
+            submitBtn.disabled = false;
+            submitBtn.innerText = '📝 선생님께 제출 및 정답 확인';
+            console.error(err);
+          })
+          .submitExploration(payload);
+      } else {
+        // 로컬 테스트 환경
+        setTimeout(() => {
+          submitBtn.disabled = false;
+          submitBtn.innerText = '📝 선생님께 제출 및 정답 확인';
+          document.getElementById('connectionStatus').innerText = '로컬 상태 갱신';
+        }, 300);
+      }
+    }
+
+    function showFeedbackWrong() {
+      const wrongBox = document.getElementById('wrongFeedbackBox');
+      const correctBox = document.getElementById('correctFeedbackBox');
+      const solCard = document.getElementById('solutionCard');
+
+      correctBox.classList.remove('visible');
+      solCard.classList.remove('visible');
+
+      const msg = document.getElementById('wrongMessage');
+      if (currentTab === 'length') {
+        msg.innerText = '다시 생각해보세요. 중심에서 변에 수선을 내려 직각삼각형을 관찰해 보세요.';
+      } else {
+        msg.innerText = '다시 생각해보세요. 중심각이 2π/n인 이등변삼각형 하나의 넓이를 구한 뒤 n을 곱해보세요.';
+      }
+      wrongBox.classList.add('visible');
+    }
+
+    function showFeedbackSuccess() {
+      const wrongBox = document.getElementById('wrongFeedbackBox');
+      const correctBox = document.getElementById('correctFeedbackBox');
+      const solCard = document.getElementById('solutionCard');
+
+      wrongBox.classList.remove('visible');
+      correctBox.classList.add('visible');
+      solCard.classList.add('visible');
+      renderAllMath();
+    }
+
+    function showFeedbackInfo(msgText) {
+      const wrongBox = document.getElementById('wrongFeedbackBox');
+      wrongBox.className = 'alert-box info visible';
+      document.getElementById('wrongTitle').innerText = '📨 제출 완료';
+      document.getElementById('wrongMessage').innerText = msgText;
+    }
+
+    function hideFeedback() {
+      document.getElementById('wrongFeedbackBox').classList.remove('visible');
+      document.getElementById('correctFeedbackBox').classList.remove('visible');
+      document.getElementById('solutionCard').classList.remove('visible');
+    }
+
+    function onStudentChange() {
+      checkCurrentStudentStatus();
+    }
+
+    function checkCurrentStudentStatus() {
+      const studentCode = document.getElementById('studentSelect').value;
+      if (approvalState[studentCode] && approvalState[studentCode][currentTab]) {
+        showFeedbackSuccess();
+      } else {
+        hideFeedback();
+      }
+    }
+
+    // --- 교사 모드 토글 및 데이터 연동 ---
+    function toggleTeacherPanel() {
+      const panel = document.getElementById('teacherPanel');
+      panel.classList.toggle('visible');
+      if (panel.classList.contains('visible')) {
+        refreshTeacherList();
+      }
+    }
+
+    function refreshTeacherList() {
+      const tbody = document.getElementById('teacherTableBody');
+      tbody.innerHTML = '<tr><td colspan="10" style="text-align:center; color:#94a3b8;">시트에서 제출 기록 동기화 중...</td></tr>';
+
+      if (typeof google !== 'undefined' && google.script && google.script.run) {
+        google.script.run
+          .withSuccessHandler((res) => {
+            if (!res || !res.list || res.list.length === 0) {
+              tbody.innerHTML = '<tr><td colspan="10" style="text-align:center; color:#94a3b8;">아직 제출된 기록이 없습니다.</td></tr>';
+              return;
+            }
+            tbody.innerHTML = '';
+            res.list.forEach(item => {
+              const tr = document.createElement('tr');
+              const isApproved = item.approval === '승인 완료';
+              tr.innerHTML = `
+                <td>${item.time}</td>
+                <td><strong>${item.studentCode}</strong></td>
+                <td>${item.studentName}</td>
+                <td>${item.taskType}</td>
+                <td><code>${item.centralAngle || '-'}</code></td>
+                <td><code>${item.formulaAnswer || '-'}</code></td>
+                <td>${item.inputMode}</td>
+                <td><span style="color:${item.autoVerdict==='정답'?'#16a34a':'#ea580c'}; font-weight:700;">${item.autoVerdict}</span></td>
+                <td><span style="color:${isApproved?'#16a34a':'#64748b'}; font-weight:700;">${item.approval}</span></td>
+                <td>
+                  <button class="approve-btn" onclick="teacherApprove(${item.rowIndex}, '${item.studentCode}', '${item.taskType}')">
+                    ${isApproved ? '승인됨 ✓' : '승인하기'}
+                  </button>
+                </td>
+              `;
+              tbody.appendChild(tr);
+            });
+          })
+          .getTeacherSubmissions();
+      } else {
+        // 로컬 테스트용
+        tbody.innerHTML = `
+          <tr>
+            <td>오늘 10:30</td>
+            <td><strong>S01</strong></td>
+            <td>민트</td>
+            <td>길이 탐구</td>
+            <td>2pi/n</td>
+            <td>2nR sin(pi/n)</td>
+            <td>타이핑</td>
+            <td><span style="color:#16a34a; font-weight:700;">정답</span></td>
+            <td><span style="color:#16a34a; font-weight:700;">승인 완료</span></td>
+            <td><button class="approve-btn">승인됨 ✓</button></td>
+          </tr>
+        `;
+      }
+    }
+
+    function teacherApprove(rowIndex, studentCode, taskType) {
+      if (typeof google !== 'undefined' && google.script && google.script.run) {
+        google.script.run
+          .withSuccessHandler(() => {
+            if (approvalState[studentCode]) {
+              const key = taskType.includes('길이') ? 'length' : 'area';
+              approvalState[studentCode][key] = true;
+            }
+            refreshTeacherList();
+            checkCurrentStudentStatus();
+          })
+          .updateApprovalStatus(rowIndex, '승인 완료');
+      } else {
+        alert(`${studentCode} 학생의 과제를 승인했습니다.`);
+      }
+    }
+
+    function loadInitialData() {
+      if (typeof google !== 'undefined' && google.script && google.script.run) {
+        google.script.run
+          .withSuccessHandler((data) => {
+            if (data && data.students && data.students.length > 0) {
+              const sel = document.getElementById('studentSelect');
+              sel.innerHTML = '';
+              data.students.forEach(st => {
+                const opt = document.createElement('option');
+                opt.value = st.code;
+                opt.innerText = `${st.code} (${st.name})`;
+                opt.setAttribute('data-name', st.name);
+                sel.appendChild(opt);
+              });
+            }
+          })
+          .getInitialData();
+      }
+    }
+
+    // 윈도우 리사이즈 대응 (반응형 캔버스)
+    window.addEventListener('resize', () => {
+      initCanvas();
+      drawGeometry();
+    });
+  </script>
+</body>
+</html>
